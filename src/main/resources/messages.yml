@@ -1,0 +1,9 @@
+prefix: "&8\u00bb&6 "
+no-permission: "&cYou need the permission '{0}' to do that!"
+
+command:
+  fail:
+    prefix-addon: "&c"
+    only-players: "&cOnly players can use this command!"
+    no-player: "&cThe player '{0}' does not exist!"
+    not-number: "&c'{0}' is not a valid number!"
