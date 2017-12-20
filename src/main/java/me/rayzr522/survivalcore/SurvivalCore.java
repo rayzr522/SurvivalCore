@@ -1,12 +1,19 @@
 package me.rayzr522.survivalcore;
 
+import me.rayzr522.survivalcore.api.commands.ICommandHandler;
+import me.rayzr522.survivalcore.api.managers.IManager;
+import me.rayzr522.survivalcore.modules.tpa.TpaManager;
 import me.rayzr522.survivalcore.utils.MessageHandler;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.PluginCommand;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 import java.util.logging.Level;
 
 /**
@@ -14,7 +21,9 @@ import java.util.logging.Level;
  */
 public class SurvivalCore extends JavaPlugin {
     private static SurvivalCore instance;
+
     private MessageHandler messages = new MessageHandler();
+    private List<IManager> managers = new ArrayList<>();
 
     public static SurvivalCore getInstance() {
         return instance;
@@ -24,12 +33,57 @@ public class SurvivalCore extends JavaPlugin {
     public void onEnable() {
         instance = this;
 
+        registerManagers();
+        registerCommands();
+
+        managers.forEach(manager -> {
+            manager.onLoad(this);
+            manager.getCommands().forEach(this::registerCommand);
+        });
+
         reload();
+    }
+
+    private void registerManagers() {
+        registerManager(new TpaManager());
+    }
+
+    private void registerCommands() {
+        // Currently unused
     }
 
     @Override
     public void onDisable() {
         instance = null;
+    }
+
+    /**
+     * @param manager The {@link IManager manager} to register
+     */
+    public void registerManager(IManager manager) {
+        managers.add(manager);
+    }
+
+    /**
+     * @param handler The {@link ICommandHandler command handler} to register
+     */
+    public void registerCommand(ICommandHandler handler) {
+        Objects.requireNonNull(handler, "handler cannot be null!");
+
+        PluginCommand command = getCommand(handler.getCommandName());
+        if (command == null) {
+            throw new IllegalArgumentException("Could not find command '" + handler.getCommandName() + "'");
+        }
+
+        command.setExecutor(handler);
+    }
+
+    public IManager getManager(Class<IManager> managerClass) {
+        return managers.stream().filter(manager -> managerClass == manager.getClass()).findFirst().orElse(null);
+    }
+
+    public IManager getManager(String name) {
+        return managers.stream().filter(manager -> manager.getName().equalsIgnoreCase(name)).findFirst().orElse(null);
     }
 
     /**

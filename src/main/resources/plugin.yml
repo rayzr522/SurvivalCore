@@ -3,8 +3,6 @@ name: SurvivalCore
 version: 1.0.0
 description: A core plugin like Essentials, but with less game-changing features
 author: Rayzr
-#commands:
-#  survivalcore:
-#    description: The main command for SurvivalCore
-#    aliases: [alias1,alias2]
-#    usage: "\u00A7cRayzr fracked something up."
+commands:
+  survivalcore:
+    description: The main command for SurvivalCore
