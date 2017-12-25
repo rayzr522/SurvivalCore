@@ -33,7 +33,7 @@ public class TpaManager implements IManager {
 
     @Override
     public String getName() {
-        return null;
+        return "TPA";
     }
 
     @Override

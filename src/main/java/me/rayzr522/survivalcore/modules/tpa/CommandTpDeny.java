@@ -1,8 +1,9 @@
 package me.rayzr522.survivalcore.modules.tpa;
 
+import me.rayzr522.survivalcore.api.commands.CommandContext;
+import me.rayzr522.survivalcore.api.commands.CommandResult;
 import me.rayzr522.survivalcore.api.commands.CommandTarget;
 import me.rayzr522.survivalcore.api.commands.ManagerCommand;
-import org.bukkit.command.CommandSender;
 
 import java.util.Arrays;
 import java.util.List;
@@ -21,12 +22,17 @@ public class CommandTpDeny extends ManagerCommand<TpaManager> {
     }
 
     @Override
+    public String getPermission() {
+        return "tpa.deny";
+    }
+
+    @Override
     public List<CommandTarget> getTargets() {
         return Arrays.asList(CommandTarget.PLAYER);
     }
 
     @Override
-    public void onCommand(CommandSender sender, String[] args) {
-
+    public CommandResult onCommand(CommandContext ctx) {
+        return CommandResult.SUCCESS;
     }
 }

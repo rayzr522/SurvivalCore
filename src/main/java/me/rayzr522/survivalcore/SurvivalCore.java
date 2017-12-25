@@ -2,10 +2,12 @@ package me.rayzr522.survivalcore;
 
 import me.rayzr522.survivalcore.api.commands.ICommandHandler;
 import me.rayzr522.survivalcore.api.managers.IManager;
-import me.rayzr522.survivalcore.modules.tpa.TpaManager;
+import me.rayzr522.survivalcore.commands.CommandAdminChat;
+import me.rayzr522.survivalcore.modules.dm.DMManager;
+import me.rayzr522.survivalcore.api.commands.CommandRegister;
 import me.rayzr522.survivalcore.utils.MessageHandler;
+import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.PluginCommand;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -22,6 +24,7 @@ import java.util.logging.Level;
 public class SurvivalCore extends JavaPlugin {
     private static SurvivalCore instance;
 
+    private CommandRegister commandRegister = new CommandRegister(this);
     private MessageHandler messages = new MessageHandler();
     private List<IManager> managers = new ArrayList<>();
 
@@ -32,6 +35,14 @@ public class SurvivalCore extends JavaPlugin {
     @Override
     public void onEnable() {
         instance = this;
+
+        try {
+            commandRegister.init();
+        } catch (NoSuchFieldException | NoSuchMethodException | IllegalAccessException e) {
+            getLogger().log(Level.SEVERE, "Failed to set up CommandRegister, disabling plugin.", e);
+            Bukkit.getPluginManager().disablePlugin(this);
+            return;
+        }
 
         registerManagers();
         registerCommands();
@@ -45,16 +56,18 @@ public class SurvivalCore extends JavaPlugin {
     }
 
     private void registerManagers() {
-        registerManager(new TpaManager());
+        // registerManager(new TpaManager());
+        registerManager(new DMManager());
     }
 
     private void registerCommands() {
-        // Currently unused
+        registerCommand(new CommandAdminChat());
     }
 
     @Override
     public void onDisable() {
         instance = null;
+        commandRegister.unregisterAll();
     }
 
     /**
@@ -70,12 +83,8 @@ public class SurvivalCore extends JavaPlugin {
     public void registerCommand(ICommandHandler handler) {
         Objects.requireNonNull(handler, "handler cannot be null!");
 
-        PluginCommand command = getCommand(handler.getCommandName());
-        if (command == null) {
-            throw new IllegalArgumentException("Could not find command '" + handler.getCommandName() + "'");
-        }
-
-        command.setExecutor(handler);
+        // TODO: More than this?
+        commandRegister.register(handler);
     }
 
     public IManager getManager(Class<IManager> managerClass) {
@@ -92,6 +101,14 @@ public class SurvivalCore extends JavaPlugin {
     public void reload() {
         saveDefaultConfig();
         reloadConfig();
+
+
+        // TODO: Remove when I'm done testing
+        System.out.println("Checking messages.yml...");
+        if (getFile("messages.yml").exists()) {
+            System.out.println("Deleting messages.yml");
+            getFile("messages.yml").delete();
+        }
 
         messages.load(getConfig("messages.yml"));
     }

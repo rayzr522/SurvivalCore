@@ -1,17 +1,21 @@
 package me.rayzr522.survivalcore.api.commands;
 
 import me.rayzr522.survivalcore.SurvivalCore;
+import me.rayzr522.survivalcore.api.commands.exceptions.GenericCommandException;
+import me.rayzr522.survivalcore.api.commands.exceptions.NoSuchPlayerException;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.function.Supplier;
 
 /**
  * Created by Rayzr522 on 5/27/17.
  */
-public interface ICommandHandler extends CommandExecutor {
+public interface ICommandHandler {
     /**
      * @return The {@link SurvivalCore} instance.
      */
@@ -24,6 +28,13 @@ public interface ICommandHandler extends CommandExecutor {
      * @return The name of the command this {@link ICommandHandler} is associated with.
      */
     String getCommandName();
+
+    /**
+     * @return A list of aliases for this command, empty by default
+     */
+    default List<String> getAliases() {
+        return Collections.emptyList();
+    }
 
     /**
      * @return The permission required to use this command (or null)
@@ -40,15 +51,7 @@ public interface ICommandHandler extends CommandExecutor {
     /**
      * @param sender The {@link CommandSender} that used this command.
      * @param args   The arguments passed to the command.
+     * @return The {@link CommandResult} of the command.
      */
-    void onCommand(CommandSender sender, String[] args);
-
-    default void tell(CommandSender sender, String key, Object... objects) {
-        sender.sendMessage(getPlugin().tr(key, objects));
-    }
-
-    default boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        onCommand(sender, args);
-        return true;
-    }
+    CommandResult onCommand(CommandContext ctx);
 }

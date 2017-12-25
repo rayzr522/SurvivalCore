@@ -3,7 +3,10 @@ package me.rayzr522.survivalcore.utils;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 
+import java.util.Arrays;
 import java.util.Hashtable;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * @author Rayzr
@@ -29,6 +32,9 @@ public class MessageHandler {
     }
 
     public String trRaw(String key, Object... objects) {
+        System.out.println("Key: " + key + ", Objects: " + Arrays.stream(objects)
+                .map(object -> object.toString() + " (" + object.getClass().getCanonicalName() + ")")
+                .collect(Collectors.joining(", ")));
         return ChatColor.translateAlternateColorCodes('&', String.format(messages.getOrDefault(key, key), objects));
     }
 

@@ -1,4 +1,4 @@
-package me.rayzr522.survivalcore.modules.tpa;
+package me.rayzr522.survivalcore.modules.dm;
 
 import me.rayzr522.survivalcore.api.commands.CommandContext;
 import me.rayzr522.survivalcore.api.commands.CommandResult;
@@ -8,31 +8,39 @@ import me.rayzr522.survivalcore.api.commands.ManagerCommand;
 import java.util.Arrays;
 import java.util.List;
 
-/**
- * Created by Rayzr522 on 5/27/17.
- */
-public class CommandTpAccept extends ManagerCommand<TpaManager> {
-    public CommandTpAccept(TpaManager manager) {
+public class CommandDM extends ManagerCommand<DMManager> {
+    public CommandDM(DMManager manager) {
         super(manager);
     }
 
     @Override
     public String getCommandName() {
-        return "tpaccept";
+        return "dm";
+    }
+
+    @Override
+    public List<String> getAliases() {
+        return Arrays.asList("msg", "whisper", "message");
     }
 
     @Override
     public String getPermission() {
-        return "tpa.accept";
+        return "dm";
     }
 
     @Override
     public List<CommandTarget> getTargets() {
-        return Arrays.asList(CommandTarget.PLAYER);
+        return CommandTarget.PLAYER.only();
     }
 
     @Override
     public CommandResult onCommand(CommandContext ctx) {
+        if (!ctx.hasArgs(2)) {
+            return CommandResult.SHOW_USAGE;
+        }
+
+        getManager().sendDM(ctx.getPlayer(), ctx.shiftPlayer(), ctx.remainder());
+
         return CommandResult.SUCCESS;
     }
 }

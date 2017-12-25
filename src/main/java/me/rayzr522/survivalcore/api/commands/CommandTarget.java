@@ -4,6 +4,8 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.function.Predicate;
 
 /**
@@ -21,5 +23,9 @@ public enum CommandTarget {
 
     public boolean isApplicable(CommandSender sender) {
         return filter.test(sender);
+    }
+
+    public List<CommandTarget> only() {
+        return Collections.singletonList(this);
     }
 }
