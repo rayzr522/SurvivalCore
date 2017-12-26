@@ -13,6 +13,8 @@ import java.util.List;
 import java.util.function.Supplier;
 
 /**
+ * Represents a command, which is dynamically registered into Bukkit's command map.
+ * <p>
  * Created by Rayzr522 on 5/27/17.
  */
 public interface ICommandHandler {
@@ -49,9 +51,8 @@ public interface ICommandHandler {
     }
 
     /**
-     * @param sender The {@link CommandSender} that used this command.
-     * @param args   The arguments passed to the command.
-     * @return The {@link CommandResult} of the command.
+     * @param ctx The {@link CommandContext context} for this command, containing the arguments, sender, etc.
+     * @return The {@link CommandResult result} of the command.
      */
     CommandResult onCommand(CommandContext ctx);
 }

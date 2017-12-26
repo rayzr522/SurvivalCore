@@ -75,14 +75,14 @@ public class SurvivalCore extends JavaPlugin {
     }
 
     /**
-     * @param manager The {@link IManager manager} to register
+     * @param manager The {@link IManager manager} to register.
      */
     public void registerManager(IManager manager) {
         managers.add(manager);
     }
 
     /**
-     * @param handler The {@link ICommandHandler command handler} to register
+     * @param handler The {@link ICommandHandler command handler} to register.
      */
     public void registerCommand(ICommandHandler handler) {
         Objects.requireNonNull(handler, "handler cannot be null!");
@@ -100,7 +100,7 @@ public class SurvivalCore extends JavaPlugin {
     }
 
     /**
-     * (Re)loads all configs from the disk
+     * (Re)loads all configs from the disk.
      */
     public void reload() {
         saveDefaultConfig();
@@ -118,10 +118,10 @@ public class SurvivalCore extends JavaPlugin {
     }
 
     /**
-     * If the file is not found and there is a default file in the JAR, it saves the default file to the plugin data folder first
+     * If the file is not found and there is a default file in the JAR, it saves the default file to the plugin data folder first.
      *
-     * @param path The path to the config file (relative to the plugin data folder)
-     * @return The {@link YamlConfiguration}
+     * @param path The path to the config file (relative to the plugin data folder).
+     * @return The {@link YamlConfiguration}.
      */
     public YamlConfiguration getConfig(String path) {
         if (!getFile(path).exists() && getResource(path) != null) {
@@ -131,10 +131,10 @@ public class SurvivalCore extends JavaPlugin {
     }
 
     /**
-     * Attempts to save a {@link YamlConfiguration} to the disk, and any {@link IOException}s are printed to the console
+     * Attempts to save a {@link YamlConfiguration} to the disk, and any {@link IOException}s are printed to the console.
      *
-     * @param config The config to save
-     * @param path   The path to save the config file to (relative to the plugin data folder)
+     * @param config The config to save.
+     * @param path   The path to save the config file to (relative to the plugin data folder).
      */
     public void saveConfig(YamlConfiguration config, String path) {
         try {
@@ -145,30 +145,30 @@ public class SurvivalCore extends JavaPlugin {
     }
 
     /**
-     * @param path The path of the file (relative to the plugin data folder)
-     * @return The {@link File}
+     * @param path The path of the file (relative to the plugin data folder).
+     * @return The {@link File}.
      */
     public File getFile(String path) {
         return new File(getDataFolder(), path.replace('/', File.separatorChar));
     }
 
     /**
-     * Returns a message from the language file
+     * Returns a message from the language file.
      *
-     * @param key     The key of the message to translate
-     * @param objects The formatting objects to use
-     * @return The formatted message
+     * @param key     The key of the message to translate.
+     * @param objects The formatting objects to use.
+     * @return The formatted message.
      */
     public String tr(String key, Object... objects) {
         return messages.tr(key, objects);
     }
 
     /**
-     * Returns a message from the language file without adding the prefix
+     * Returns a message from the language file without adding the prefix.
      *
-     * @param key     The key of the message to translate
-     * @param objects The formatting objects to use
-     * @return The formatted message
+     * @param key     The key of the message to translate.
+     * @param objects The formatting objects to use.
+     * @return The formatted message.
      */
     public String trRaw(String key, Object... objects) {
         return messages.trRaw(key, objects);
@@ -183,10 +183,10 @@ public class SurvivalCore extends JavaPlugin {
      * <p>
      * This would check if the player had the permission <code>"{plugin name}.command.use"</code>, and if they didn't, it would send them the no-permission message from the messages config file.
      *
-     * @param target      The target {@link CommandSender} to check
-     * @param permission  The permission to check, excluding the permission base (which is the plugin name)
-     * @param sendMessage Whether or not to send a no-permission message to the target
-     * @return Whether or not the target has the given permission
+     * @param target      The target {@link CommandSender} to check.
+     * @param permission  The permission to check, excluding the permission base (which is the plugin name).
+     * @param sendMessage Whether or not to send a no-permission message to the target.
+     * @return Whether or not the target has the given permission.
      */
     public boolean checkPermission(CommandSender target, String permission, boolean sendMessage) {
         String fullPermission = String.format("%s.%s", getName(), permission);
@@ -203,7 +203,7 @@ public class SurvivalCore extends JavaPlugin {
     }
 
     /**
-     * @return The {@link MessageHandler} instance for this plugin
+     * @return The {@link MessageHandler} instance for this plugin.
      */
     public MessageHandler getMessages() {
         return messages;

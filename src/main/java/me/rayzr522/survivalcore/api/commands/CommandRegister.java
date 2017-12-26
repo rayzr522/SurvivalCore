@@ -37,6 +37,9 @@ public class CommandRegister {
         knownCommandsField.setAccessible(true);
     }
 
+    /**
+     * Unregisters all commands that have been registered to Bukkit's {@link org.bukkit.command.CommandMap}
+     */
     public void unregisterAll() {
         Map<String, Command> internalCommandMap = getCommandMap();
 
