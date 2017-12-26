@@ -1,6 +1,7 @@
 package me.rayzr522.survivalcore.utils;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 import java.util.Arrays;
@@ -22,5 +23,9 @@ public class Utils {
 
     public static String join(Object[] items, String joiner) {
         return join(Arrays.asList(items), joiner);
+    }
+
+    public static Location centerLocation(Location location) {
+        return new Location(location.getWorld(), location.getBlockX() + 0.5f, location.getBlockY(), location.getBlockZ() + 0.5f, location.getYaw(), location.getPitch());
     }
 }

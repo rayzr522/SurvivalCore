@@ -19,3 +19,6 @@ command:
   reply:
     usage: "<message>"
     no-conversation: "&cYou are not currently in a conversation."
+  kick:
+    usage: "<player>"
+    success: "Kicked &c%s"

@@ -17,7 +17,7 @@ class InternalCommandExecutor implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         CommandContext commandContext = new CommandContext(command, sender, args);
 
-        if (!command.getTargets().stream().allMatch(target -> target.isApplicable(sender))) {
+        if (!command.getTargets().stream().anyMatch(target -> target.isApplicable(sender))) {
             // TODO: Changed based on what the allowed targets are
             commandContext.tell("command.fail.only-players");
             return true;

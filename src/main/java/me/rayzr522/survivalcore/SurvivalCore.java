@@ -3,6 +3,8 @@ package me.rayzr522.survivalcore;
 import me.rayzr522.survivalcore.api.commands.ICommandHandler;
 import me.rayzr522.survivalcore.api.managers.IManager;
 import me.rayzr522.survivalcore.commands.CommandAdminChat;
+import me.rayzr522.survivalcore.commands.CommandKick;
+import me.rayzr522.survivalcore.commands.CommandSpawn;
 import me.rayzr522.survivalcore.modules.dm.DMManager;
 import me.rayzr522.survivalcore.api.commands.CommandRegister;
 import me.rayzr522.survivalcore.utils.MessageHandler;
@@ -62,6 +64,8 @@ public class SurvivalCore extends JavaPlugin {
 
     private void registerCommands() {
         registerCommand(new CommandAdminChat());
+        registerCommand(new CommandSpawn());
+        registerCommand(new CommandKick());
     }
 
     @Override
