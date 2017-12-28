@@ -51,6 +51,9 @@ public class DMManager implements IManager {
         to.sendMessage(plugin.trRaw("command.dm.message-format", from.getDisplayName(), self, message));
 
         conversations.put(from.getUniqueId(), to.getUniqueId());
+        // If the receiver isn't in a conversation already, you might as well make it easy for them to reply.
+        // This is so that, if they're already in a conversation, they won't suddenly have their /reply going to another user, but if they aren't already in a conversation then they can easily reply to the new one that was just started.
+        conversations.asMap().putIfAbsent(to.getUniqueId(), from.getUniqueId());
     }
 
     Optional<Player> getLastTarget(Player player) {

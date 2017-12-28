@@ -7,6 +7,7 @@ import org.bukkit.entity.Player;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 public class Utils {
@@ -65,5 +66,9 @@ public class Utils {
      */
     public static Location centerLocation(Location location) {
         return new Location(location.getWorld(), location.getBlockX() + 0.5f, location.getBlockY(), location.getBlockZ() + 0.5f, location.getYaw(), location.getPitch());
+    }
+
+    public static Optional<Player> getPlayer(UUID uuid) {
+        return Optional.ofNullable(Bukkit.getPlayer(uuid));
     }
 }

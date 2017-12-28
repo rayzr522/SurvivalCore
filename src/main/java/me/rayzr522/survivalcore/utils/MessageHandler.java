@@ -15,7 +15,11 @@ public class MessageHandler {
     private Hashtable<String, String> messages = new Hashtable<>();
 
     private static String getBaseKey(String key) {
-        return key.substring(0, key.lastIndexOf('.'));
+        int index = key.lastIndexOf('.');
+        if (index < 0) {
+            return "";
+        }
+        return key.substring(0, index);
     }
 
     /**

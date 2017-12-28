@@ -6,6 +6,7 @@ import me.rayzr522.survivalcore.api.commands.CommandTarget;
 import me.rayzr522.survivalcore.api.commands.ManagerCommand;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -23,7 +24,12 @@ public class CommandTpDeny extends ManagerCommand<TpaManager> {
 
     @Override
     public String getPermission() {
-        return "tpa.deny";
+        return "tpdeny";
+    }
+
+    @Override
+    public List<String> getAliases() {
+        return Collections.singletonList("tpno");
     }
 
     @Override
@@ -33,6 +39,11 @@ public class CommandTpDeny extends ManagerCommand<TpaManager> {
 
     @Override
     public CommandResult onCommand(CommandContext ctx) {
+        TpaManager.TpaRequest request = getManager().getCurrentRequest(ctx.getPlayer().getUniqueId())
+                .orElseThrow(ctx.fail("command.tpdeny.no-request"));
+
+        getManager().cancelRequest(ctx.getPlayer().getUniqueId());
+        request.getRequesterPlayer().ifPresent(player -> ctx.tell(player, "command.tpa.denied"));
         return CommandResult.SUCCESS;
     }
 }

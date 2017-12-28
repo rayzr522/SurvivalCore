@@ -22,3 +22,23 @@ command:
   kick:
     usage: "<player>"
     success: "Kicked &c%s"
+  tpa:
+    usage: "<player>"
+    expired: "&cTeleport request expired."
+    denied: "&cYour teleport request was denied."
+    requested: "Requested to teleport to &c%s&6."
+    target-notification: "&c%s&6 requested to teleport to you. Do &c/tpaccept&6 to accept, &c/tpdeny&6 to cancel. This request will expire in &c2&6 minutes."
+    success:
+      to: "Teleporting you to &c%s&6..."
+      here: "Teleporting &c%s&6 to you..."
+  tpahere:
+    usage: "<player>"
+    requested: "Requested that &c%s&6 teleport to you."
+    target-notification: "&c%s&6 requested that you teleport to them. Do &c/tpaccept&6 to accept, &c/tpdeny&6 to cancel. This request will expire in &c2&6 minutes."
+    success-requester: "Teleporting &c%s&6 to you..."
+  tpaccept:
+    usage: ""
+    no-request: "&cYou have no pending requests to accept."
+  tpdeny:
+    usage: ""
+    no-request: "&cYou have no pending requests to deny."

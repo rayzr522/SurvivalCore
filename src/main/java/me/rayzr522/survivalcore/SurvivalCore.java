@@ -1,12 +1,13 @@
 package me.rayzr522.survivalcore;
 
+import me.rayzr522.survivalcore.api.commands.CommandRegister;
 import me.rayzr522.survivalcore.api.commands.ICommandHandler;
 import me.rayzr522.survivalcore.api.managers.IManager;
 import me.rayzr522.survivalcore.commands.CommandAdminChat;
 import me.rayzr522.survivalcore.commands.CommandKick;
 import me.rayzr522.survivalcore.commands.CommandSpawn;
 import me.rayzr522.survivalcore.modules.dm.DMManager;
-import me.rayzr522.survivalcore.api.commands.CommandRegister;
+import me.rayzr522.survivalcore.modules.tpa.TpaManager;
 import me.rayzr522.survivalcore.utils.MessageHandler;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
@@ -58,7 +59,7 @@ public class SurvivalCore extends JavaPlugin {
     }
 
     private void registerManagers() {
-        // registerManager(new TpaManager());
+        registerManager(new TpaManager());
         registerManager(new DMManager());
     }
 

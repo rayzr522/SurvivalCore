@@ -6,25 +6,24 @@ import me.rayzr522.survivalcore.api.commands.CommandTarget;
 import me.rayzr522.survivalcore.api.commands.ManagerCommand;
 import org.bukkit.entity.Player;
 
-import java.util.Arrays;
 import java.util.List;
 
 /**
  * Created by Rayzr522 on 5/27/17.
  */
-public class CommandTpa extends ManagerCommand<TpaManager> {
-    public CommandTpa(TpaManager manager) {
+public class CommandTpaHere extends ManagerCommand<TpaManager> {
+    public CommandTpaHere(TpaManager manager) {
         super(manager);
     }
 
     @Override
     public String getCommandName() {
-        return "tpa";
+        return "tpahere";
     }
 
     @Override
     public String getPermission() {
-        return "tpa";
+        return "tpahere";
     }
 
     @Override
@@ -41,9 +40,9 @@ public class CommandTpa extends ManagerCommand<TpaManager> {
         Player requester = ctx.getPlayer();
         Player target = ctx.shiftPlayer();
 
-        getManager().requestTeleport(new TpaManager.TpaRequest(requester.getUniqueId(), target.getUniqueId(), TpaDirection.TO_TARGET));
-        ctx.tell("command.tpa.requested", target.getDisplayName());
-        ctx.tell(target, "command.tpa.target-notification", requester.getDisplayName());
+        getManager().requestTeleport(new TpaManager.TpaRequest(requester.getUniqueId(), target.getUniqueId(), TpaDirection.TO_REQUSTER));
+        ctx.tell("command.tpahere.requested", target.getDisplayName());
+        ctx.tell(target, "command.tpahere.target-notification", requester.getDisplayName());
 
         return CommandResult.SUCCESS;
     }
