@@ -20,7 +20,7 @@ public class CommandDM extends ManagerCommand<DMManager> {
 
     @Override
     public List<String> getAliases() {
-        return Arrays.asList("msg", "whisper", "message");
+        return Arrays.asList("msg", "whisper", "message", "tell");
     }
 
     @Override
