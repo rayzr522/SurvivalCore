@@ -8,6 +8,7 @@ import me.rayzr522.survivalcore.api.storage.impl.YamlStorageProvider;
 import me.rayzr522.survivalcore.commands.CommandAdminChat;
 import me.rayzr522.survivalcore.commands.CommandKick;
 import me.rayzr522.survivalcore.commands.CommandSpawn;
+import me.rayzr522.survivalcore.modules.chestsorter.ChestSorterModule;
 import me.rayzr522.survivalcore.modules.dm.DMModule;
 import me.rayzr522.survivalcore.modules.pvptoggle.PVPToggleModule;
 import me.rayzr522.survivalcore.modules.tpa.TpaModule;
@@ -83,6 +84,7 @@ public class SurvivalCore extends JavaPlugin {
         registerModule(new TpaModule());
         registerModule(new DMModule());
         registerModule(new PVPToggleModule());
+        registerModule(new ChestSorterModule());
     }
 
     private void registerCommands() {

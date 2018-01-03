@@ -1,5 +1,7 @@
 package me.rayzr522.survivalcore.api.storage;
 
+import me.rayzr522.survivalcore.utils.Utils;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -125,6 +127,19 @@ public class Hunk {
     }
 
     /**
+     * Gets an enum constant.
+     *
+     * @param key      The key of the enum constant.
+     * @param enumType The enum class.
+     * @param <T>      The type of the enum class.
+     * @return An {@link Optional} containing the enum constant.
+     */
+    public <T extends Enum<T>> Optional<T> getEnumConstant(String key, Class<T> enumType) {
+        return getString(key).flatMap(val -> Utils.getEnumConstant(enumType, val));
+
+    }
+
+    /**
      * Gets a Hunk.
      *
      * @param key The key of the hunk.
@@ -133,5 +148,4 @@ public class Hunk {
     public Optional<Hunk> getHunk(String key) {
         return this.<Map>get(key).map(Hunk::new);
     }
-
 }

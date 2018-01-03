@@ -2,12 +2,11 @@ package me.rayzr522.survivalcore.utils;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class Utils {
@@ -32,6 +31,26 @@ public class Utils {
     @SuppressWarnings("deprecated")
     public static Optional<Player> findPlayerExact(String name) {
         return Optional.ofNullable(Bukkit.getPlayer("name"));
+    }
+
+    /**
+     * Gets the online player with the given UUID.
+     *
+     * @param uuid The UUID of the player to get.
+     * @return An {@link Optional} with the player, if that player is online.
+     */
+    public static Optional<Player> getPlayer(UUID uuid) {
+        return Optional.ofNullable(Bukkit.getPlayer(uuid));
+    }
+
+    /**
+     * Returns an {@link Optional} based on whether or not the item is null <i>as well as whether or not the item has a type of {@link Material#AIR}</i>.
+     *
+     * @param item The item to check.
+     * @return An {@link Optional} containing the item.
+     */
+    public static Optional<ItemStack> optionalItem(ItemStack item) {
+        return (item == null || item.getType() == Material.AIR) ? Optional.empty() : Optional.of(item);
     }
 
     /**
@@ -68,7 +87,50 @@ public class Utils {
         return new Location(location.getWorld(), location.getBlockX() + 0.5f, location.getBlockY(), location.getBlockZ() + 0.5f, location.getYaw(), location.getPitch());
     }
 
-    public static Optional<Player> getPlayer(UUID uuid) {
-        return Optional.ofNullable(Bukkit.getPlayer(uuid));
+    /**
+     * Gets an enum constant of the given type with the given name.
+     *
+     * @param enumType The enum class of the constant.
+     * @param name     The name of the constant.
+     * @param <T>      The type of the enum class.
+     * @return An {@link Optional} containing the enum constant.
+     */
+    public static <T extends Enum<T>> Optional<T> getEnumConstant(Class<T> enumType, String name) {
+        Objects.requireNonNull(enumType, "enumType cannot be null!");
+        Objects.requireNonNull(name, "name cannot be null!");
+
+        try {
+            return Optional.of(Enum.valueOf(enumType, name.toUpperCase()));
+        } catch (IllegalArgumentException e) {
+            return Optional.empty();
+        }
+    }
+
+    private static <T> int indexOf(T[] items, T item) {
+        Objects.requireNonNull(items, "items cannot be null!");
+
+        for (int i = 0; i < items.length; i++) {
+            if (Objects.equals(items[i], item)) {
+                return i;
+            }
+        }
+
+        return -1;
+    }
+
+    private static <T> T cycleArray(T[] items, int currentIndex) {
+        return items[++currentIndex % items.length];
+    }
+
+    /**
+     * Gets the next item in an array, wrapping around when the end is reached.
+     *
+     * @param items   The array.
+     * @param current The current item in the array.
+     * @param <T>     The type of the array.
+     * @return The next item.
+     */
+    public static <T> T cycleArray(T[] items, T current) {
+        return cycleArray(items, indexOf(items, current));
     }
 }
