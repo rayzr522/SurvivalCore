@@ -3,16 +3,13 @@ package me.rayzr522.survivalcore.utils;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 
-import java.util.Arrays;
 import java.util.Hashtable;
-import java.util.Objects;
-import java.util.stream.Collectors;
 
 /**
  * @author Rayzr
  */
 public class MessageHandler {
-    private Hashtable<String, String> messages = new Hashtable<>();
+    private final Hashtable<String, String> messages = new Hashtable<>();
 
     private static String getBaseKey(String key) {
         int index = key.lastIndexOf('.');

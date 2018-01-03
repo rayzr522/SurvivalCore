@@ -3,7 +3,7 @@ package me.rayzr522.survivalcore.modules.tpa;
 import me.rayzr522.survivalcore.api.commands.CommandContext;
 import me.rayzr522.survivalcore.api.commands.CommandResult;
 import me.rayzr522.survivalcore.api.commands.CommandTarget;
-import me.rayzr522.survivalcore.api.commands.ManagerCommand;
+import me.rayzr522.survivalcore.api.commands.ModuleCommand;
 import org.bukkit.entity.Player;
 
 import java.util.Arrays;
@@ -13,9 +13,9 @@ import java.util.List;
 /**
  * Created by Rayzr522 on 5/27/17.
  */
-public class CommandTpAccept extends ManagerCommand<TpaManager> {
-    public CommandTpAccept(TpaManager manager) {
-        super(manager);
+public class CommandTpAccept extends ModuleCommand<TpaModule> {
+    public CommandTpAccept(TpaModule module) {
+        super(module);
     }
 
     @Override
@@ -35,15 +35,15 @@ public class CommandTpAccept extends ManagerCommand<TpaManager> {
 
     @Override
     public List<CommandTarget> getTargets() {
-        return Arrays.asList(CommandTarget.PLAYER);
+        return Collections.singletonList(CommandTarget.PLAYER);
     }
 
     @Override
     public CommandResult onCommand(CommandContext ctx) {
-        TpaManager.TpaRequest request = getManager().getCurrentRequest(ctx.getPlayer().getUniqueId())
+        TpaModule.TpaRequest request = getModule().getCurrentRequest(ctx.getPlayer().getUniqueId())
                 .orElseThrow(ctx.fail("command.tpaccept.no-request"));
 
-        // Already handled by TpaRequest#isValid() (which is called in TpaManager#getCurrentRequest())
+        // Already handled by TpaRequest#isValid() (which is called in TpaModule#getCurrentRequest())
         // This is just to get IntelliJ to shut up.
         assert request.getTargetPlayer().isPresent();
         assert request.getRequesterPlayer().isPresent();
@@ -56,7 +56,7 @@ public class CommandTpAccept extends ManagerCommand<TpaManager> {
         target.sendMessage(getSuccessMessage(direction.getTargetMessageKey(), requester.getDisplayName()));
         requester.sendMessage(getSuccessMessage(direction.getRequesterMessageKey(), target.getDisplayName()));
 
-        if (!getManager().cancelRequest(request.getTarget())) {
+        if (!getModule().cancelRequest(request.getTarget())) {
             ctx.getPlayer().sendMessage("Failed to cancel request. What the frack?");
             return CommandResult.FAIL;
         }

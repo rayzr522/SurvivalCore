@@ -1,31 +1,31 @@
-package me.rayzr522.survivalcore.modules.dm;
+package me.rayzr522.survivalcore.modules.pvptoggle;
 
 import me.rayzr522.survivalcore.api.commands.CommandContext;
 import me.rayzr522.survivalcore.api.commands.CommandResult;
 import me.rayzr522.survivalcore.api.commands.CommandTarget;
 import me.rayzr522.survivalcore.api.commands.ModuleCommand;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
-public class CommandDM extends ModuleCommand<DMModule> {
-    public CommandDM(DMModule module) {
+public class CommandPVPToggle extends ModuleCommand<PVPToggleModule> {
+    public CommandPVPToggle(PVPToggleModule module) {
         super(module);
     }
 
     @Override
     public String getCommandName() {
-        return "dm";
+        return "pvptoggle";
     }
 
     @Override
     public List<String> getAliases() {
-        return Arrays.asList("msg", "whisper", "message", "tell");
+        return Collections.singletonList("pvp");
     }
 
     @Override
     public String getPermission() {
-        return "dm";
+        return "pvptoggle";
     }
 
     @Override
@@ -35,11 +35,9 @@ public class CommandDM extends ModuleCommand<DMModule> {
 
     @Override
     public CommandResult onCommand(CommandContext ctx) {
-        if (!ctx.hasArgs(2)) {
-            return CommandResult.SHOW_USAGE;
-        }
+        boolean enabled = getModule().togglePVP(ctx.getPlayer());
 
-        getModule().sendDM(ctx.getPlayer(), ctx.shiftPlayer(), ctx.remainder());
+        ctx.tell("command.pvptoggle.toggled", enabled ? getPlugin().tr("constants.enabled") : getPlugin().tr("constants.disabled"));
 
         return CommandResult.SUCCESS;
     }

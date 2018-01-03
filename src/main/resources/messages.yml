@@ -1,6 +1,11 @@
 prefix: "&8\u00bb&6 "
 no-permission: "&cYou need the permission '%s' to do that!"
 
+constants:
+  prefix: ""
+  enabled: "&aenabled"
+  disabled: "&cdisabled"
+
 command:
   fail:
     prefix-addon: "&c"
@@ -8,7 +13,7 @@ command:
     only-players: "Only players can use this command!"
     no-player: "The player '%s' does not exist!"
     not-number: "That is not a valid number!"
-    invalid-usage: "&cUsage: &7/%s &e%s"
+    invalid-usage: "Usage: &7/%s &e%s"
   adminchat:
     usage: "<message>"
     message-format: "&8[&cADMIN &8| &6%s&8] &e%s"
@@ -42,3 +47,6 @@ command:
   tpdeny:
     usage: ""
     no-request: "&cYou have no pending requests to deny."
+  pvptoggle:
+    usage: ""
+    toggled: "PVP is now &e%s&6 for you."

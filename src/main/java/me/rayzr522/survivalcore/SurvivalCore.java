@@ -2,12 +2,15 @@ package me.rayzr522.survivalcore;
 
 import me.rayzr522.survivalcore.api.commands.CommandRegister;
 import me.rayzr522.survivalcore.api.commands.ICommandHandler;
-import me.rayzr522.survivalcore.api.managers.IManager;
+import me.rayzr522.survivalcore.api.modules.IModule;
+import me.rayzr522.survivalcore.api.storage.IStorageProvider;
+import me.rayzr522.survivalcore.api.storage.impl.YamlStorageProvider;
 import me.rayzr522.survivalcore.commands.CommandAdminChat;
 import me.rayzr522.survivalcore.commands.CommandKick;
 import me.rayzr522.survivalcore.commands.CommandSpawn;
-import me.rayzr522.survivalcore.modules.dm.DMManager;
-import me.rayzr522.survivalcore.modules.tpa.TpaManager;
+import me.rayzr522.survivalcore.modules.dm.DMModule;
+import me.rayzr522.survivalcore.modules.pvptoggle.PVPToggleModule;
+import me.rayzr522.survivalcore.modules.tpa.TpaModule;
 import me.rayzr522.survivalcore.utils.MessageHandler;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
@@ -19,6 +22,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.logging.Level;
 
 /**
@@ -27,9 +31,12 @@ import java.util.logging.Level;
 public class SurvivalCore extends JavaPlugin {
     private static SurvivalCore instance;
 
-    private CommandRegister commandRegister = new CommandRegister(this);
-    private MessageHandler messages = new MessageHandler();
-    private List<IManager> managers = new ArrayList<>();
+    private final CommandRegister commandRegister = new CommandRegister(this);
+    private final MessageHandler messages = new MessageHandler();
+    private final List<IModule> modules = new ArrayList<>();
+    private IStorageProvider settings;
+    private IStorageProvider storageProvider;
+    private IStorageProvider playerData;
 
     public static SurvivalCore getInstance() {
         return instance;
@@ -39,6 +46,20 @@ public class SurvivalCore extends JavaPlugin {
     public void onEnable() {
         instance = this;
 
+        settings = new YamlStorageProvider(getFile("settings.yml"));
+        settings.load(this);
+        settings.reload();
+
+        storageProvider = new YamlStorageProvider(getFile("storage.yml"));
+        storageProvider.load(this);
+        storageProvider.reload();
+
+        // TODO: Is this better?
+        // playerData = storageProvider.fork("players");
+        playerData = new YamlStorageProvider(getFile("players.yml"));
+        playerData.load(this);
+        playerData.reload();
+
         try {
             commandRegister.init();
         } catch (NoSuchFieldException | NoSuchMethodException | IllegalAccessException e) {
@@ -47,20 +68,21 @@ public class SurvivalCore extends JavaPlugin {
             return;
         }
 
-        registerManagers();
+        registerModules();
         registerCommands();
 
-        managers.forEach(manager -> {
-            manager.onLoad(this);
-            manager.getCommands().forEach(this::registerCommand);
+        modules.forEach(module -> {
+            module.onLoad(this);
+            module.getCommands().forEach(this::registerCommand);
         });
 
         reload();
     }
 
-    private void registerManagers() {
-        registerManager(new TpaManager());
-        registerManager(new DMManager());
+    private void registerModules() {
+        registerModule(new TpaModule());
+        registerModule(new DMModule());
+        registerModule(new PVPToggleModule());
     }
 
     private void registerCommands() {
@@ -72,38 +94,47 @@ public class SurvivalCore extends JavaPlugin {
     @Override
     public void onDisable() {
         instance = null;
+
+        settings.save();
+        storageProvider.save();
+        playerData.save();
+
+        settings.unload(this);
+        storageProvider.unload(this);
+        playerData.unload(this);
+
         commandRegister.unregisterAll();
     }
 
     /**
-     * @param manager The {@link IManager manager} to register.
+     * @param module The {@link IModule module} to register.
      */
-    public void registerManager(IManager manager) {
-        managers.add(manager);
+    private void registerModule(IModule module) {
+        modules.add(module);
     }
 
     /**
      * @param handler The {@link ICommandHandler command handler} to register.
      */
-    public void registerCommand(ICommandHandler handler) {
+    private void registerCommand(ICommandHandler handler) {
         Objects.requireNonNull(handler, "handler cannot be null!");
 
         // TODO: More than this?
         commandRegister.register(handler);
     }
 
-    public IManager getManager(Class<IManager> managerClass) {
-        return managers.stream().filter(manager -> managerClass == manager.getClass()).findFirst().orElse(null);
+    public Optional<IModule> getModule(Class<IModule> moduleClass) {
+        return modules.stream().filter(module -> moduleClass == module.getClass()).findFirst();
     }
 
-    public IManager getManager(String name) {
-        return managers.stream().filter(manager -> manager.getName().equalsIgnoreCase(name)).findFirst().orElse(null);
+    public Optional<IModule> getModule(String name) {
+        return modules.stream().filter(module -> module.getName().equalsIgnoreCase(name)).findFirst();
     }
 
     /**
      * (Re)loads all configs from the disk.
      */
-    public void reload() {
+    private void reload() {
         saveDefaultConfig();
         reloadConfig();
 
@@ -119,12 +150,33 @@ public class SurvivalCore extends JavaPlugin {
     }
 
     /**
+     * @return The settings storage provider.
+     */
+    public IStorageProvider getSettings() {
+        return settings;
+    }
+
+    /**
+     * @return The general purpose storage provider.
+     */
+    public IStorageProvider getStorageProvider() {
+        return storageProvider;
+    }
+
+    /**
+     * @return The player data storage provider.
+     */
+    public IStorageProvider getPlayerData() {
+        return playerData;
+    }
+
+    /**
      * If the file is not found and there is a default file in the JAR, it saves the default file to the plugin data folder first.
      *
-     * @param path The path to the config file (relative to the plugin data folder).
+     * @param path The path to the settings file (relative to the plugin data folder).
      * @return The {@link YamlConfiguration}.
      */
-    public YamlConfiguration getConfig(String path) {
+    private YamlConfiguration getConfig(String path) {
         if (!getFile(path).exists() && getResource(path) != null) {
             saveResource(path, true);
         }
@@ -134,14 +186,14 @@ public class SurvivalCore extends JavaPlugin {
     /**
      * Attempts to save a {@link YamlConfiguration} to the disk, and any {@link IOException}s are printed to the console.
      *
-     * @param config The config to save.
-     * @param path   The path to save the config file to (relative to the plugin data folder).
+     * @param config The settings to save.
+     * @param path   The path to save the settings file to (relative to the plugin data folder).
      */
     public void saveConfig(YamlConfiguration config, String path) {
         try {
             config.save(getFile(path));
         } catch (IOException e) {
-            getLogger().log(Level.SEVERE, "Failed to save config", e);
+            getLogger().log(Level.SEVERE, "Failed to save settings", e);
         }
     }
 
@@ -149,7 +201,7 @@ public class SurvivalCore extends JavaPlugin {
      * @param path The path of the file (relative to the plugin data folder).
      * @return The {@link File}.
      */
-    public File getFile(String path) {
+    private File getFile(String path) {
         return new File(getDataFolder(), path.replace('/', File.separatorChar));
     }
 
@@ -182,7 +234,7 @@ public class SurvivalCore extends JavaPlugin {
      *     checkPermission(sender, "command.use", true);
      * </pre>
      * <p>
-     * This would check if the player had the permission <code>"{plugin name}.command.use"</code>, and if they didn't, it would send them the no-permission message from the messages config file.
+     * This would check if the player had the permission <code>"{plugin name}.command.use"</code>, and if they didn't, it would send them the no-permission message from the messages settings file.
      *
      * @param target      The target {@link CommandSender} to check.
      * @param permission  The permission to check, excluding the permission base (which is the plugin name).

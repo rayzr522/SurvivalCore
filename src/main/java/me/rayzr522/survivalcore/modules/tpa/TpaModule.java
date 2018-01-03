@@ -2,16 +2,12 @@ package me.rayzr522.survivalcore.modules.tpa;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
-import com.google.common.cache.RemovalCause;
-import com.google.common.cache.RemovalNotification;
 import me.rayzr522.survivalcore.SurvivalCore;
-import me.rayzr522.survivalcore.api.commands.ManagerCommand;
-import me.rayzr522.survivalcore.api.managers.IManager;
+import me.rayzr522.survivalcore.api.commands.ModuleCommand;
+import me.rayzr522.survivalcore.api.modules.AbstractModule;
 import me.rayzr522.survivalcore.utils.Utils;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
-import javax.swing.text.html.Option;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -21,7 +17,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * Created by Rayzr522 on 5/27/17.
  */
-public class TpaManager implements IManager {
+public class TpaModule extends AbstractModule {
     private final Cache<UUID, TpaRequest> requestCache = CacheBuilder.newBuilder()
             .expireAfterWrite(2, TimeUnit.MINUTES)
             .build();
@@ -33,6 +29,7 @@ public class TpaManager implements IManager {
 
     @Override
     public void onLoad(SurvivalCore core) {
+        super.onLoad(core);
         commandTpa = new CommandTpa(this);
         commandTpaHere = new CommandTpaHere(this);
         commandTpAccept = new CommandTpAccept(this);
@@ -45,7 +42,7 @@ public class TpaManager implements IManager {
     }
 
     @Override
-    public List<ManagerCommand> getCommands() {
+    public List<ModuleCommand> getCommands() {
         return Arrays.asList(commandTpa, commandTpaHere, commandTpAccept, commandTpDeny);
     }
 
@@ -55,11 +52,7 @@ public class TpaManager implements IManager {
 
     boolean cancelRequest(UUID target) {
         TpaRequest request = requestCache.asMap().remove(target);
-        if (request == null || !request.isValid()) {
-            return false;
-        } else {
-            return true;
-        }
+        return request != null && request.isValid();
     }
 
     Optional<TpaRequest> getCurrentRequest(UUID target) {
@@ -76,9 +69,9 @@ public class TpaManager implements IManager {
     }
 
     public static class TpaRequest {
-        private UUID requester;
-        private UUID target;
-        private TpaDirection direction;
+        private final UUID requester;
+        private final UUID target;
+        private final TpaDirection direction;
 
         public TpaRequest(UUID requester, UUID target, TpaDirection direction) {
             this.requester = requester;
@@ -106,7 +99,7 @@ public class TpaManager implements IManager {
             return Utils.getPlayer(target);
         }
 
-        public boolean isValid() {
+        boolean isValid() {
             return getRequesterPlayer().isPresent() && getTargetPlayer().isPresent();
         }
     }

@@ -6,12 +6,9 @@ import me.rayzr522.survivalcore.api.commands.CommandResult;
 import me.rayzr522.survivalcore.api.commands.CommandTarget;
 import me.rayzr522.survivalcore.api.commands.ICommandHandler;
 import org.bukkit.Bukkit;
-import org.bukkit.command.CommandSender;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class CommandAdminChat implements ICommandHandler {
     @Override

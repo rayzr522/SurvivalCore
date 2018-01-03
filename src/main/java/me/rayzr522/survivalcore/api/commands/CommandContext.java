@@ -95,7 +95,7 @@ public class CommandContext {
     /**
      * @return The list of arguments that were passed to the command, removing any arguments that were {@link #shift() shift}ed off.
      */
-    public List<String> getArgs() {
+    private List<String> getArgs() {
         return args.subList(currentArg, args.size());
     }
 
@@ -103,7 +103,7 @@ public class CommandContext {
      * @param joiner The string to join the arguments with.
      * @return The remaining arguments, concatenated with the given joiner.
      */
-    public String remainder(String joiner) {
+    private String remainder(String joiner) {
         return Utils.join(getArgs(), joiner);
     }
 
@@ -128,7 +128,7 @@ public class CommandContext {
      *
      * @return The shifted argument, or <code>null</code> if there are no arguments left.
      */
-    public String shift() {
+    private String shift() {
         if (currentArg == args.size()) {
             return null;
         }

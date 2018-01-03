@@ -3,7 +3,7 @@ package me.rayzr522.survivalcore.modules.tpa;
 import me.rayzr522.survivalcore.api.commands.CommandContext;
 import me.rayzr522.survivalcore.api.commands.CommandResult;
 import me.rayzr522.survivalcore.api.commands.CommandTarget;
-import me.rayzr522.survivalcore.api.commands.ManagerCommand;
+import me.rayzr522.survivalcore.api.commands.ModuleCommand;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -12,9 +12,9 @@ import java.util.List;
 /**
  * Created by Rayzr522 on 5/27/17.
  */
-public class CommandTpDeny extends ManagerCommand<TpaManager> {
-    public CommandTpDeny(TpaManager manager) {
-        super(manager);
+public class CommandTpDeny extends ModuleCommand<TpaModule> {
+    public CommandTpDeny(TpaModule module) {
+        super(module);
     }
 
     @Override
@@ -34,15 +34,15 @@ public class CommandTpDeny extends ManagerCommand<TpaManager> {
 
     @Override
     public List<CommandTarget> getTargets() {
-        return Arrays.asList(CommandTarget.PLAYER);
+        return Collections.singletonList(CommandTarget.PLAYER);
     }
 
     @Override
     public CommandResult onCommand(CommandContext ctx) {
-        TpaManager.TpaRequest request = getManager().getCurrentRequest(ctx.getPlayer().getUniqueId())
+        TpaModule.TpaRequest request = getModule().getCurrentRequest(ctx.getPlayer().getUniqueId())
                 .orElseThrow(ctx.fail("command.tpdeny.no-request"));
 
-        getManager().cancelRequest(ctx.getPlayer().getUniqueId());
+        getModule().cancelRequest(ctx.getPlayer().getUniqueId());
         request.getRequesterPlayer().ifPresent(player -> ctx.tell(player, "command.tpa.denied"));
         return CommandResult.SUCCESS;
     }

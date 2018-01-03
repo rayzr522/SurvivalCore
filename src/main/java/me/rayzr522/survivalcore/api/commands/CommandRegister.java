@@ -14,8 +14,8 @@ import java.util.List;
 import java.util.Map;
 
 public class CommandRegister {
-    private SurvivalCore plugin;
-    private List<Command> registeredCommands = new LinkedList<>();
+    private final SurvivalCore plugin;
+    private final List<Command> registeredCommands = new LinkedList<>();
 
     private SimpleCommandMap commandMap;
     private Constructor<PluginCommand> pluginCommandConstructor;
@@ -81,6 +81,7 @@ public class CommandRegister {
     public void register(ICommandHandler commandHandler) {
         PluginCommand command = createCommand(commandHandler.getCommandName());
 
+        assert command != null;
         command.setExecutor(new InternalCommandExecutor(commandHandler));
         command.setAliases(commandHandler.getAliases());
 
