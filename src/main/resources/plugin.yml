@@ -1,6 +1,6 @@
 main: me.rayzr522.survivalcore.SurvivalCore
 name: SurvivalCore
-version: 1.0.0
+version: ${project.version}
 description: A core plugin like Essentials, but with less game-changing features
 author: Rayzr
 commands:

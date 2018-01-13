@@ -11,6 +11,7 @@
     <defaultGoal>clean test package</defaultGoal>
     <resources>
       <resource>
+        <filtering>true</filtering>
         <directory>${basedir}/src/main/resources</directory>
         <includes>
           <include>**/*</include>
